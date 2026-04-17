@@ -2,6 +2,20 @@
 
 Toutes les evolutions notables de ce plugin sont documentees ici.
 
+## 1.2.1 - 2026-04-17
+
+### Corrections
+
+- Corrige la persistance runtime des reglages admin pour appliquer correctement `rateLimitSeconds` et `commentsPerPage`.
+- Corrige un cas de fatal error sur des hebergements sans extension `mbstring` (fallbacks de compatibilite).
+- Corrige la detection de locale Bludit avec fallbacks robustes pour appliquer correctement FR/EN.
+- Corrige l'onglet moderation pour n'afficher que les pages ou les commentaires sont actives.
+
+### Ameliorations
+
+- Ajoute une couche i18n complete (anglais par defaut, surcharge francaise selon la langue du site).
+- Localise les messages front/admin, y compris les retours JS (etats, erreurs, sauvegarde).
+
 ## 1.2.0 - 2026-04-17
 
 ### Documentation et publication

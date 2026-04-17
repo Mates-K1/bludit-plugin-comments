@@ -1,18 +1,20 @@
-# Release v1.2.0
+# Release v1.2.1
 
 ## FR - Resume
 
-- Correction des soumissions involontaires dans l'administration (onglets non-submit).
-- Correction du delai anti-spam (`rateLimitSeconds`) avec prise en charge de `0 = desactive`.
-- Implementation du parametre `commentsPerPage` pour la pagination front.
-- Publication repository amelioree: README bilingue, LICENSE CC BY-SA 4.0, SECURITY, CONTRIBUTING, CHANGELOG.
+- Correction de la persistance runtime des reglages (`rateLimitSeconds`, `commentsPerPage`) pour appliquer les valeurs du back-office.
+- Correction de compatibilite pour les environnements sans extension `mbstring`.
+- Ajout d'une couche i18n complete: anglais par defaut, francais selon la langue du site.
+- Correction de la detection de langue Bludit avec fallbacks robustes.
+- Filtrage de l'onglet moderation: seules les pages avec commentaires actives sont affichees.
 
 ## EN - Summary
 
-- Fixed unintended admin form submissions (tabs are now non-submit buttons).
-- Fixed anti-spam delay handling (`rateLimitSeconds`) with support for `0 = disabled`.
-- Implemented `commentsPerPage` setting for front-end comment pagination.
-- Improved repository publication assets: bilingual README, CC BY-SA 4.0 LICENSE, SECURITY, CONTRIBUTING, CHANGELOG.
+- Fixed runtime settings persistence (`rateLimitSeconds`, `commentsPerPage`) so back-office values are applied correctly.
+- Added compatibility fallback for environments without `mbstring`.
+- Added complete i18n layer: English default, French override based on site language.
+- Improved Bludit locale detection with robust fallbacks.
+- Updated moderation tab filtering to show only pages with comments enabled.
 
 ## Upgrade notes
 
