@@ -1,0 +1,72 @@
+# Bludit Plugin Comments
+
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
+![Bludit](https://img.shields.io/badge/Bludit-3.x-5b32a3)
+![License](https://img.shields.io/badge/license-CC%20BY--SA%204.0-lightgrey)
+
+FR: Plugin de commentaires pour Bludit 3.x avec moderation, anti-spam ALTCHA, protection CSRF, validation de longueur, moderation et pagination.
+
+EN: Comment plugin for Bludit 3.x with ALTCHA anti-spam, CSRF protection, length validation, moderation, and pagination.
+
+## FR - Fonctionnalites
+
+- Activation/desactivation des commentaires par page (configuration plugin ou editeur de page).
+- Moderation des commentaires (en attente, publication, suppression, purge).
+- Protection CSRF pour le formulaire front.
+- Verification anti-spam avec ALTCHA.
+- Limitation de frequence configurable (`Delai entre deux commentaires (secondes)`).
+- Pagination front configurable (`Commentaires affiches par page`).
+- Stockage JSON dans `bl-content/databases/bl-plugin-comments/`.
+
+## EN - Features
+
+- Enable/disable comments per page (plugin settings or page editor).
+- Comment moderation workflow (pending, approve, delete, clear).
+- CSRF protection for front-end submission.
+- ALTCHA anti-spam verification.
+- Configurable rate limiting (`Delay between two comments (seconds)`).
+- Configurable front pagination (`Comments displayed per page`).
+- JSON file-based storage in `bl-content/databases/bl-plugin-comments/`.
+
+## FR - Installation
+
+1. Copier le dossier du plugin dans `bl-plugins/bl-plugin-comments/`.
+2. Activer le plugin depuis l'administration Bludit.
+3. Ouvrir la page de configuration du plugin pour ajuster les reglages.
+
+## EN - Installation
+
+1. Copy the plugin folder to `bl-plugins/bl-plugin-comments/`.
+2. Enable the plugin from Bludit administration.
+3. Open the plugin configuration page and adjust settings.
+
+## FR - Reglages importants
+
+- `Moderation avant publication` : impose une validation manuelle avant affichage public.
+- `Delai entre deux commentaires (secondes)` :
+  - `0` desactive la limitation
+  - `> 0` applique un blocage par IP sur la duree definie
+- `Commentaires affiches par page` : nombre de commentaires visibles avant pagination.
+
+## EN - Important settings
+
+- `Moderation before publishing`: requires manual validation before public display.
+- `Delay between two comments (seconds)`:
+  - `0` disables rate limiting
+  - `> 0` applies IP-based cooldown
+- `Comments displayed per page`: number of comments visible before pagination.
+
+## Maintainer
+
+- Author: Green Effect
+- Contact: `contact@green-effect.fr`
+- Website: [www.green-effect.fr](https://www.green-effect.fr)
+
+## Changelog
+
+See `CHANGELOG.md`.
+
+## License
+
+This project is distributed under [Creative Commons Attribution - ShareAlike 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/).
+See `LICENSE`.

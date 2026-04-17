@@ -1,0 +1,6 @@
+{
+    "plugin-data": {
+        "name": "Plugin Comments",
+        "description": "Adds a file-based comments system with moderation, CSRF protection, rate limiting, and ALTCHA anti-spam."
+    }
+}

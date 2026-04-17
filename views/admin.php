@@ -1,0 +1,334 @@
+<?php defined('BLUDIT') or die('Bludit CMS.'); ?>
+
+<div class="blc-admin" id="blc-admin-root">
+
+    <!-- ── En-tête ────────────────────────────── -->
+    <div class="blc-admin-header">
+        <h2 class="blc-admin-header__title">
+            <svg class="blc-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Gestion des commentaires
+        </h2>
+        <div class="blc-stats-bar">
+            <span class="blc-stat blc-stat--pending">
+                <strong><?php echo $totalPending; ?></strong> en attente
+            </span>
+            <span class="blc-stat blc-stat--approved">
+                <strong><?php echo $totalApproved; ?></strong> publiés
+            </span>
+            <span class="blc-stat">
+                <strong><?php echo count($pagesWithComments); ?></strong> page(s) actives
+            </span>
+        </div>
+    </div>
+
+    <!-- ── Tabs ───────────────────────────────── -->
+    <nav class="blc-tabs" role="tablist">
+        <button type="button"
+                class="blc-tab active"
+                data-tab="moderation"
+                role="tab"
+                aria-selected="true"
+                aria-controls="blc-tab-moderation"
+                id="tab-moderation-btn">
+            Modération
+            <?php if ($totalPending > 0): ?>
+            <span class="blc-badge blc-badge--alert"><?php echo $totalPending; ?></span>
+            <?php endif; ?>
+        </button>
+        <button type="button"
+                class="blc-tab"
+                data-tab="pages"
+                role="tab"
+                aria-selected="false"
+                aria-controls="blc-tab-pages"
+                id="tab-pages-btn">
+            Pages
+        </button>
+        <button type="button"
+                class="blc-tab"
+                data-tab="settings"
+                role="tab"
+                aria-selected="false"
+                aria-controls="blc-tab-settings"
+                id="tab-settings-btn">
+            Réglages
+        </button>
+    </nav>
+
+    <!-- ══════════════════════════════════════════
+         TAB 1 — MODÉRATION
+    ═══════════════════════════════════════════════ -->
+    <div class="blc-tab-content active" id="blc-tab-moderation" role="tabpanel">
+
+        <?php if (empty($pagesWithComments)): ?>
+        <div class="blc-empty-state">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8C18.7 8 8 18.7 8 32s10.7 24 24 24 24-10.7 24-24S45.3 8 32 8zm0 4c11.1 0 20 8.9 20 20s-8.9 20-20 20S12 43.1 12 32s8.9-20 20-20zm-2 10v12l8 4.8-1.6 2.7L28 36V22h2z" fill="currentColor"/></svg>
+            <p>Aucun commentaire pour le moment.<br>Activez les commentaires sur une page pour commencer.</p>
+        </div>
+        <?php else: ?>
+
+        <?php foreach ($pagesWithComments as $pg): ?>
+        <?php
+            $countP = count($pg['pending']);
+            $countA = count($pg['approved']);
+        ?>
+        <div class="blc-page-block">
+            <div class="blc-page-block__header" data-toggle="page-<?php echo htmlspecialchars($pg['key'], ENT_QUOTES, 'UTF-8'); ?>">
+                <span class="blc-page-block__title">
+                    <?php echo htmlspecialchars($pg['title'], ENT_QUOTES, 'UTF-8'); ?>
+                    <span class="blc-page-key"><?php echo htmlspecialchars($pg['key'], ENT_QUOTES, 'UTF-8'); ?></span>
+                </span>
+                <span class="blc-page-block__badges">
+                    <?php if ($countP > 0): ?>
+                    <span class="blc-badge blc-badge--pending"><?php echo $countP; ?> en attente</span>
+                    <?php endif; ?>
+                    <?php if ($countA > 0): ?>
+                    <span class="blc-badge blc-badge--approved"><?php echo $countA; ?> publié<?php echo $countA > 1 ? 's' : ''; ?></span>
+                    <?php endif; ?>
+                    <svg class="blc-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+            </div>
+
+            <div class="blc-page-block__body" id="page-<?php echo htmlspecialchars($pg['key'], ENT_QUOTES, 'UTF-8'); ?>">
+
+                <!-- EN ATTENTE -->
+                <?php if (!empty($pg['pending'])): ?>
+                <div class="blc-section-label blc-section-label--pending">
+                    ⏳ En attente de modération
+                </div>
+                <div class="blc-comments-group">
+                    <?php foreach ($pg['pending'] as $c): ?>
+                    <div class="blc-comment blc-comment--pending">
+                        <div class="blc-comment__meta">
+                            <div class="blc-comment__header">
+                                <span class="blc-comment__author">
+                                    <?php echo htmlspecialchars($c['author'], ENT_QUOTES, 'UTF-8'); ?>
+                                </span>
+                                <time class="blc-comment__date">
+                                    <?php echo date('d/m/Y H\hi', strtotime($c['date'])); ?>
+                                </time>
+                            </div>
+                            <div class="blc-comment__content">
+                                <?php echo htmlspecialchars($c['content'], ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
+                        </div>
+                        <div class="blc-comment__actions">
+                            <button type="button"
+                                    class="blc-btn blc-btn--approve blc-action-btn"
+                                    data-action="approve"
+                                    data-page-key="<?php echo htmlspecialchars($pg['key'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-comment-id="<?php echo htmlspecialchars($c['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                                ✓ Publier
+                            </button>
+                            <button type="button"
+                                    class="blc-btn blc-btn--delete blc-action-btn"
+                                    data-action="delete_pending"
+                                    data-page-key="<?php echo htmlspecialchars($pg['key'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-comment-id="<?php echo htmlspecialchars($c['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                                ✕ Supprimer
+                            </button>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php if (count($pg['pending']) > 1): ?>
+                <div class="blc-bulk-action">
+                    <button type="button"
+                            class="blc-btn blc-btn--delete-all blc-action-btn"
+                            data-action="clear_pending"
+                            data-page-key="<?php echo htmlspecialchars($pg['key'], ENT_QUOTES, 'UTF-8'); ?>"
+                            data-comment-id="">
+                        Supprimer tous les commentaires en attente
+                    </button>
+                </div>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <!-- APPROUVÉS -->
+                <?php if (!empty($pg['approved'])): ?>
+                <div class="blc-section-label blc-section-label--approved">
+                    ✓ Publiés
+                </div>
+                <div class="blc-comments-group">
+                    <?php foreach (array_reverse($pg['approved']) as $c): ?>
+                    <div class="blc-comment blc-comment--approved">
+                        <div class="blc-comment__meta">
+                            <div class="blc-comment__header">
+                                <span class="blc-comment__author">
+                                    <?php echo htmlspecialchars($c['author'], ENT_QUOTES, 'UTF-8'); ?>
+                                </span>
+                                <time class="blc-comment__date">
+                                    <?php echo date('d/m/Y H\hi', strtotime($c['date'])); ?>
+                                </time>
+                            </div>
+                            <div class="blc-comment__content">
+                                <?php echo htmlspecialchars($c['content'], ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
+                        </div>
+                        <div class="blc-comment__actions">
+                            <button type="button"
+                                    class="blc-btn blc-btn--delete blc-action-btn"
+                                    data-action="delete_approved"
+                                    data-page-key="<?php echo htmlspecialchars($pg['key'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-comment-id="<?php echo htmlspecialchars($c['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                                ✕ Supprimer
+                            </button>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+
+                <?php if (empty($pg['pending']) && empty($pg['approved'])): ?>
+                <p class="blc-no-comments">Aucun commentaire sur cette page.</p>
+                <?php endif; ?>
+
+                <!-- Tout supprimer -->
+                <?php if (!empty($pg['pending']) || !empty($pg['approved'])): ?>
+                <div class="blc-bulk-action blc-bulk-action--danger">
+                    <button type="button"
+                            class="blc-btn blc-btn--danger blc-action-btn"
+                            data-action="clear_all"
+                            data-page-key="<?php echo htmlspecialchars($pg['key'], ENT_QUOTES, 'UTF-8'); ?>"
+                            data-comment-id=""
+                            data-confirm="Supprimer TOUS les commentaires de cette page ?">
+                        🗑 Vider tous les commentaires de cette page
+                    </button>
+                </div>
+                <?php endif; ?>
+
+            </div>
+        </div>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         TAB 2 — PAGES (activer / désactiver)
+    ═══════════════════════════════════════════════ -->
+    <div class="blc-tab-content" id="blc-tab-pages" role="tabpanel">
+        <p class="blc-help-intro">
+            Activez ou désactivez les commentaires pour chaque page.<br>
+            Vous pouvez aussi le faire directement depuis l'éditeur de page.
+        </p>
+
+        <?php if (empty($allBluditPages)): ?>
+        <p class="blc-empty">Aucune page trouvée.</p>
+        <?php else: ?>
+        <div class="blc-pages-table">
+            <?php foreach ($allBluditPages as $bp): ?>
+            <?php $isEnabled = $plugin->isCommentsEnabled($bp['key']); ?>
+            <div class="blc-pages-row">
+                <span class="blc-pages-row__title">
+                    <?php echo htmlspecialchars($bp['title'], ENT_QUOTES, 'UTF-8'); ?>
+                    <small><?php echo htmlspecialchars($bp['key'], ENT_QUOTES, 'UTF-8'); ?></small>
+                </span>
+                <label class="blc-toggle" title="<?php echo $isEnabled ? 'Désactiver' : 'Activer'; ?> les commentaires">
+                    <input type="checkbox"
+                           class="blc-toggle__input blc-page-toggle"
+                           data-page-key="<?php echo htmlspecialchars($bp['key'], ENT_QUOTES, 'UTF-8'); ?>"
+                           <?php echo $isEnabled ? 'checked' : ''; ?>>
+                    <span class="blc-toggle__track"></span>
+                    <span class="blc-toggle__status">
+                        <?php echo $isEnabled ? 'Activés' : 'Désactivés'; ?>
+                    </span>
+                </label>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         TAB 3 — RÉGLAGES
+    ═══════════════════════════════════════════════ -->
+    <div class="blc-tab-content" id="blc-tab-settings" role="tabpanel">
+
+        <div class="blc-settings-grid">
+
+            <div class="blc-setting">
+                <label class="blc-setting__label">
+                    <input type="checkbox"
+                           name="requireApproval"
+                           value="1"
+                           <?php echo $requireApproval ? 'checked' : ''; ?>>
+                    Modération avant publication
+                </label>
+                <p class="blc-setting__help">Les nouveaux commentaires nécessitent une validation.</p>
+            </div>
+
+            <div class="blc-setting">
+                <label class="blc-setting__label" for="s-minlen">
+                    Longueur minimale du commentaire
+                </label>
+                <input type="number"
+                       id="s-minlen"
+                       name="minCommentLength"
+                       value="<?php echo $minCommentLength; ?>"
+                       min="1" max="500">
+                <p class="blc-setting__help">Nombre de caractères minimum.</p>
+            </div>
+
+            <div class="blc-setting">
+                <label class="blc-setting__label" for="s-maxlen">
+                    Longueur maximale du commentaire
+                </label>
+                <input type="number"
+                       id="s-maxlen"
+                       name="maxCommentLength"
+                       value="<?php echo $maxCommentLength; ?>"
+                       min="50" max="10000">
+                <p class="blc-setting__help">Nombre de caractères maximum.</p>
+            </div>
+
+            <div class="blc-setting">
+                <label class="blc-setting__label" for="s-rate">
+                    Délai entre deux commentaires (secondes)
+                </label>
+                <input type="number"
+                       id="s-rate"
+                       name="rateLimitSeconds"
+                       value="<?php echo $rateLimitSeconds; ?>"
+                       min="0" max="86400">
+                <p class="blc-setting__help">Temps de blocage par IP après un commentaire. 0 = désactivé.</p>
+            </div>
+
+            <div class="blc-setting">
+                <label class="blc-setting__label" for="s-perpage">
+                    Commentaires affichés par page
+                </label>
+                <input type="number"
+                       id="s-perpage"
+                       name="commentsPerPage"
+                       value="<?php echo $commentsPerPage; ?>"
+                       min="1" max="100">
+                <p class="blc-setting__help">Nombre de commentaires affiches par page sur le site.</p>
+            </div>
+
+        </div>
+
+        <p class="blc-settings-save-hint">
+            → Cliquez sur <strong>Save</strong> en bas de page pour enregistrer ces réglages.
+        </p>
+    </div>
+
+</div><!-- /.blc-admin -->
+
+<script>
+(function(){
+    // Synchronise les onglets via le hash de l'URL
+    var hash = window.location.hash;
+    if (hash === '#tab-moderation') blcActivateTab('moderation');
+    else if (hash === '#tab-pages') blcActivateTab('pages');
+    else if (hash === '#tab-settings') blcActivateTab('settings');
+
+    function blcActivateTab(name) {
+        document.querySelectorAll('.blc-tab').forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+        document.querySelectorAll('.blc-tab-content').forEach(function(c){ c.classList.remove('active'); });
+        var btn = document.querySelector('.blc-tab[data-tab="'+name+'"]');
+        var panel = document.getElementById('blc-tab-'+name);
+        if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
+        if (panel) panel.classList.add('active');
+    }
+})();
+</script>
