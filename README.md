@@ -8,6 +8,8 @@ FR: Plugin de commentaires pour Bludit 3.x avec moderation, anti-spam ALTCHA, pr
 
 EN: Comment plugin for Bludit 3.x with ALTCHA anti-spam, CSRF protection, length validation, moderation, and pagination.
 
+![Capture d'écran de l'application](screenshot.png)
+
 ## FR - Fonctionnalites
 
 - Activation/desactivation des commentaires par page (configuration plugin ou editeur de page).
